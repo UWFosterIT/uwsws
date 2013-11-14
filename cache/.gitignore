@@ -1,0 +1,5 @@
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
+#so that the cache dir exists when a cloner runs the tests
