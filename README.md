@@ -2,6 +2,10 @@
 
 TODO: Write a gem description
 
+THIS IS ALL PLACEHOLDER STUFF BELOW RIGHT NOW
+THE CODEBASE DOES WORK...SEE /test
+WILL UPDATE THIS IN A WEEK OR SO ONCE FINAL BUILD IS READY
+
 ## Installation
 
 Add this line to your application's Gemfile:
