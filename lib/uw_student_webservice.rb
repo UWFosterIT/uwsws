@@ -1,7 +1,7 @@
 require "restclient"
 require "logger"
 require "json"
-require_relative "uw_student_webservice/version"
+require "uw_student_webservice/version"
 
 class UwStudentWebService
   attr_reader :last, :next
@@ -182,7 +182,7 @@ class UwStudentWebService
     data = clean(data)
 
     @last = JSON.parse(data)
-    @logger.info "fetched - #{@last}"
+    @logger.debug "fetched - #{@last}"
     @next = @last["Next"].nil? ? "" : @last["Next"]["Href"]
 
     @last
@@ -231,7 +231,7 @@ class UwStudentWebService
 
   def get_cache(file)
     if @use_cache && File.exist?(file)
-      @logger.info "Getting cache for #{file}"
+      @logger.debug "Getting cache for #{file}"
       File.open(file).read
     else
       nil
@@ -240,7 +240,7 @@ class UwStudentWebService
 
   def set_cache(response, url)
     if @use_cache
-      @logger.info "Setting cache for #{url}"
+      @logger.debug "Setting cache for #{url}"
       File.open(url, "w") { |f| f.write(response) }
     end
   end
@@ -251,7 +251,7 @@ class UwStudentWebService
       @cert_file = File.read(cert)
       does_exist?(key)
       @key_file  = File.read(key)
-      @logger.info "loaded cert and key files"
+      @logger.debug "loaded cert and key files"
     end
 
     true
