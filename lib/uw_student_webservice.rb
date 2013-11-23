@@ -55,6 +55,18 @@ class UwStudentWebService
     parse("#{endpoint}term/#{year},#{quarter}.json")
   end
 
+  def term_current
+    parse("#{endpoint}term/current.json")
+  end
+
+  def term_next
+    parse("#{endpoint}term/next.json")
+  end
+
+  def term_previous
+    parse("#{endpoint}term/previous.json")
+  end
+
   def sections(year, curriculum: "", instructor: "",
                count: 0, quarter: "", course_num: "", is_private: false)
     fix_param(curriculum)
@@ -123,6 +135,18 @@ class UwStudentWebService
 
   def term_private(year, quarter)
     parse("#{endpoint(true)}term/#{year},#{quarter}.json")
+  end
+
+  def term_current_private
+    parse("#{endpoint(true)}term/current.json")
+  end
+
+  def term_next_private
+    parse("#{endpoint(true)}term/next.json")
+  end
+
+  def term_previous_private
+    parse("#{endpoint(true)}term/previous.json")
   end
 
   def person(regid)

@@ -36,6 +36,14 @@ describe UwStudentWebservice do
     end
   end
 
+  describe "when asked for the current, next and previous term private " do
+    it "each must respond with a FirstDay" do
+      @uw.term_current_private["FirstDay"].wont_be_nil
+      @uw.term_next_private["FirstDay"].wont_be_nil
+      @uw.term_previous_private["FirstDay"].wont_be_nil
+    end
+  end
+
   describe "when getting section status private endpoint " do
     it "it must not be nil" do
       # this endpoint requires extra permissions that I dont have

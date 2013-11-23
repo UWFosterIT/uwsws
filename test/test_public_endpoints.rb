@@ -36,6 +36,14 @@ describe UwStudentWebservice do
     end
   end
 
+  describe "when asked for the current, next and previous terms " do
+    it "each must respond with a FirstDay" do
+      @uw.term_current["FirstDay"].wont_be_nil
+      @uw.term_next["FirstDay"].wont_be_nil
+      @uw.term_previous["FirstDay"].wont_be_nil
+    end
+  end
+
   describe "when asked for colleges " do
     it "must return at least 10 of them" do
       @uw.colleges("SEATTLE").size.must_be :>, 9
