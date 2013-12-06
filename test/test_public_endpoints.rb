@@ -7,7 +7,7 @@ describe UwStudentWebservice do
   before do
     log       = Logger.new("log.txt")
     log.level = Logger::FATAL
-    @uw       = UwStudentWebService.new(logger: log)
+    @uw       = UwStudentWebService.new(logger: log, use_cache: true)
   end
 
   def terms

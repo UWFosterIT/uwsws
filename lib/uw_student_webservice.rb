@@ -67,8 +67,8 @@ class UwStudentWebService
     parse("#{endpoint}term/previous.json")
   end
 
-  def sections(year, curriculum: "", instructor: "",
-               count: 0, quarter: "", course_num: "", is_private: false)
+  def sections(year, curriculum: "", instructor: "", count: 0, quarter: "",
+               course_num: "", is_private: false)
     fix_param(curriculum)
     data = parse("#{endpoint(is_private)}section.json?year=#{year}"\
                  "&quarter=#{quarter}&curriculum_abbreviation=#{curriculum}"\
@@ -244,12 +244,11 @@ class UwStudentWebService
     if @private_endpoint
       RestClient::Resource.new(
         url,
-        :ssl_client_cert  =>  OpenSSL::X509::Certificate.new(@cert_file),
-        :ssl_client_key   =>  OpenSSL::PKey::RSA.new(@key_file),
-        :log              =>  @logger
-      )
+        ssl_client_cert: OpenSSL::X509::Certificate.new(@cert_file),
+        ssl_client_key: OpenSSL::PKey::RSA.new(@key_file),
+        log: @logger)
     else
-      RestClient::Resource.new(url, :log =>  @logger)
+      RestClient::Resource.new(url, log: @logger)
     end
   end
 
@@ -286,8 +285,8 @@ class UwStudentWebService
   end
 
   def clean_bools(data)
-    data.gsub('"false"', 'false')
-    data.gsub('"true"', 'true')
+    data.gsub('"false"', "false")
+    data.gsub('"true"', "true")
   end
 
   def clean_spaces(data)
