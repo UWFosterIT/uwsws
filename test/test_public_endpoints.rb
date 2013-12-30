@@ -7,7 +7,8 @@ describe UwStudentWebservice do
   before do
     log       = Logger.new("log.txt")
     log.level = Logger::FATAL
-    @uw       = UwStudentWebService.new(logger: log, use_cache: true)
+    @uw       = UwStudentWebService.new(logger: log, use_cache: true,
+                                        throw_HEPPS: false)
   end
 
   def terms
@@ -108,6 +109,11 @@ describe UwStudentWebservice do
     end
   end
 
+  describe "when asked for section with a HEPPS error " do
+    it "must respond with error 500" do
+      @uw.section(2013, "autumn", "PB AF", 521, "A").must_be_nil
+    end
+  end
   # course searches
   #   cirric is not needed if searching by course number
   #   future terms must be 0-2, but, must be zero if exclude course w/o section
