@@ -7,7 +7,7 @@ class UwStudentWebService
   attr_reader :last, :next
 
   def initialize(throw_404: true, logger: Logger.new(STDOUT),
-                 use_cache: true, cert: "", key: "")
+                 use_cache: true, cert: "", key: "", throw_HEPPS: true)
     @base             = "https://ws.admin.washington.edu/student/v4/public/"
     @base_private     = "https://ws.admin.washington.edu/student/v4/"
     @last             = nil
@@ -15,6 +15,7 @@ class UwStudentWebService
     @use_cache        = use_cache
     @logger           = logger
     @throw_404        = throw_404
+    @throw_HEPS       = throw_HEPPS
     @private_endpoint = false
     load_config(cert, key)
   end
@@ -223,13 +224,14 @@ class UwStudentWebService
           data = response
         elsif response.code == 301
           response.follow_redirection(request, result, &block)
-        elsif (response.code == 401 ||
-           (response.code == 500 && response.to_s.include?("Sr-Course-Titles")))
+        elsif response.code == 401 ||
+           (response.code == 500 &&
+            response.to_s.include?("Sr-Course-Titles") && @throw_HEPPS)
           # these should be reported to help@uw.edu
           # HEPPS errors for future courses, report to help@uw.edu
           # HEPPS errors for past courses are not fixable
           @logger.fatal("#{url} - #{response.to_s}")
-        elsif response.code == 404 && !@throw_404
+        elsif response.code == 404 && @throw_404
           @logger.fatal("#{url} - 404 - #{response.to_s}")
         else
           raise "Errors for #{url}\n#{response.to_s}"
