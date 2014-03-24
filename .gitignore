@@ -1,5 +1,6 @@
 *.gem
 *.rbc
+deploy.sh
 .bundle
 .config
 .yardoc
