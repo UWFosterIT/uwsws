@@ -1,28 +1,58 @@
-# UwStudentWebservice
+# Uw Student Web Service
 
-TODO: Write a gem description
+This implements almost all of the public and private [v4 UW Student Webservice
+endpoints](https://wiki.cac.washington.edu/display/SWS/Student+Web+Service+Client+Home+Page).  It's designed to fetch the JSON endpoints and return a Hash.  This gem has the capability to cache all web requests to assit with speedy development.
 
-THIS IS ALL PLACEHOLDER STUFF BELOW RIGHT NOW
-THE CODEBASE DOES WORK...SEE /test
-WILL UPDATE THIS IN A WEEK OR SO ONCE FINAL BUILD IS READY
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Install the restclient dependancy
 
-    gem 'uw_student_webservice'
+    $ gem install restclient
 
-And then execute:
+Clone this repo
 
-    $ bundle
+    $ git clone git@github.com:UWFosterIT/uwsws.git
 
-Or install it yourself as:
+Run the tests
 
-    $ gem install uw_student_webservice
+    $ rake
+
+Build and install
+
+    $ rake build
+    $ rake install
 
 ## Usage
 
-TODO: Write usage instructions here
+Basic example below gives you hash of term data for winter 2013
+
+    require 'uw_student_webservice'
+    service = UwStudentWebService.new
+    term    = service.term(2013, "winter")
+
+Maybe you want all the Geology courses from 1985?
+
+    require 'uw_student_webservice'
+    service = UwStudentWebService.new
+    courses = service(1985, "winter", curriculum: "GEOG")
+
+For cases where you need to page through results you can check for the existance
+of ``service.next`` and make follow up queries based on it's data.
+
+    require 'uw_student_webservice'
+    service = UWStudentWebService.new
+    courses = service.courses(1985, "autumn", curriculum: "GEOG", size: 25)
+    puts service.next
+
+For a full list of examples see /test
+
+## Caching
+
+If you pass ``use_cache: true`` as a parameter to ``UWStudentWebService.new`` all web requests will be cached in your local file system. However, you will need to remove/edit the cache symlink in the root of this repo to a valid directory.
+
+## TO DO
+Put this on RubyGems.org so it's as easy as "gem install uwsws"
 
 ## Contributing
 
