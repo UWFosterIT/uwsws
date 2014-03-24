@@ -14,7 +14,9 @@ Clone this repo
 
     $ git clone git@github.com:UWFosterIT/uwsws.git
 
-Run the tests (create a cache directory, only do this once)
+Run the tests (create a cache directory, only do this once). Make sure to delete
+/test/test_private_endpoints.rb if you are not authorized at those endpoints
+otherwise half the tests will fail.
 
     $ rm cache
     $ mkdir cache
