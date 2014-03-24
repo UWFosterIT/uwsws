@@ -1,4 +1,4 @@
-# Uw Student Web Service
+# UW Student Web Service
 
 This implements almost all of the public and private [v4 UW Student Webservice
 endpoints](https://wiki.cac.washington.edu/display/SWS/Student+Web+Service+Client+Home+Page).  It's designed to fetch the JSON endpoints and return a Hash.  This gem has the capability to cache all web requests to assit with speedy development.
@@ -14,8 +14,10 @@ Clone this repo
 
     $ git clone git@github.com:UWFosterIT/uwsws.git
 
-Run the tests
+Run the tests (create a cache directory, only do this once)
 
+    $ rm cache
+    $ mkdir cache
     $ rake
 
 Build and install
@@ -49,7 +51,7 @@ For a full list of examples see /test
 
 ## Caching
 
-If you pass ``use_cache: true`` as a parameter to ``UWStudentWebService.new`` all web requests will be cached in your local file system. However, you will need to remove/edit the cache symlink in the root of this repo to a valid directory.
+If you pass ``use_cache: true`` as a parameter to ``UWStudentWebService.new`` all web requests will be cached in your local file system. However, you will need to have a cache directory in the root of whatever projects you are using this gem in.
 
 ## TO DO
 Put this on RubyGems.org so it's as easy as "gem install uwsws"
