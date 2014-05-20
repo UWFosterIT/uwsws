@@ -1,34 +1,22 @@
 # UW Student Web Service
-
 This implements almost all of the public and private [v4 UW Student Webservice
 endpoints](https://wiki.cac.washington.edu/display/SWS/Student+Web+Service+Client+Home+Page).  It's designed to fetch the JSON endpoints and return a Hash.  This gem has the capability to cache all web requests to assit with speedy development.
 
-
 ## Installation
 
-Install the restclient dependancy
+    git clone git@github.com:UWFosterIT/uwsws.git
+    bundle install
+    rake build
+    rake install
 
-    $ gem install restclient
+## Setup and Tests
+Make sure to delete /test/test_private_endpoints.rb if you are not authorized at those endpoints otherwise half the tests will fail.  Change the ``cache`` symlink to point a valid path or create a directory for it like below.
 
-Clone this repo
-
-    $ git clone git@github.com:UWFosterIT/uwsws.git
-
-Run the tests (create a cache directory, only do this once). Make sure to delete
-/test/test_private_endpoints.rb if you are not authorized at those endpoints
-otherwise half the tests will fail.
-
-    $ rm cache
-    $ mkdir cache
-    $ rake
-
-Build and install
-
-    $ rake build
-    $ rake install
+    rm cache
+    mkdir cache
+    rake
 
 ## Usage
-
 Basic example below gives you hash of term data for winter 2013
 
     require 'uw_student_webservice'
