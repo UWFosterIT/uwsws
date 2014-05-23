@@ -1,9 +1,8 @@
 require "restclient"
 require "logger"
 require "json"
-require "uw_student_webservice/version"
 
-class UwStudentWebService
+class UwSws
   attr_reader :last, :next
 
   def initialize(throw_404: true, logger: Logger.new(STDOUT),
