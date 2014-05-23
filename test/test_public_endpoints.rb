@@ -1,14 +1,13 @@
 require "minitest/autorun"
 require "json"
 require "logger"
-require_relative "../lib/uw_student_webservice"
+require_relative "../lib/uw_sws"
 
-describe UwStudentWebservice do
+describe UwSws do
   before do
     log       = Logger.new("log.txt")
     log.level = Logger::FATAL
-    @uw       = UwStudentWebService.new(logger: log, use_cache: true,
-                                        throw_HEPPS: false)
+    @uw       = UwSws.new(logger: log, use_cache: true, throw_HEPPS: false)
   end
 
   def terms

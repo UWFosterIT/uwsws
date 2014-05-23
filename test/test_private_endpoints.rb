@@ -1,18 +1,17 @@
 require "minitest/autorun"
 require "json"
 require "logger"
-require_relative "../lib/uw_student_webservice"
+require_relative "../lib/uw_sws"
 
-describe UwStudentWebservice do
+describe UwSws do
   before do
     log       = Logger.new("log.txt")
     log.level = Logger::FATAL
 
-    cert = "/home/marc/.keys/milesm.bschool.pem"
-    key = "/home/marc/.keys/ItsAllGood.key"
+    cert   = "/home/marc/.keys/milesm.bschool.pem"
+    key    = "/home/marc/.keys/ItsAllGood.key"
     @regid = "DB79E7927ECA11D694790004AC494FFE"
-    @uw  = UwStudentWebService.new(cert: cert, key: key, logger: log,
-                                   use_cache: true)
+    @uw    = UwSws.new(cert: cert, key: key, logger: log, use_cache: true)
   end
 
   #
