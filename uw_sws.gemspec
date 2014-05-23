@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["milesm@uw.edu"]
   spec.description   = %q{Interfaces with UW Student Web Service}
   spec.summary       = %q{Wraps most of the rest endpoints}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/UWFosterIT/uwsws"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
