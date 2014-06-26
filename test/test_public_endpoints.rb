@@ -14,7 +14,7 @@ describe UwSws do
     [:winter, :spring, :summer, :autumn]
   end
 
-  describe "when asked for campus " do
+  describe "when getting campus list " do
     it "must return at least 3 of them" do
       data = @uw.campus
       campus = data["Campuses"]
@@ -22,14 +22,14 @@ describe UwSws do
     end
   end
 
-  describe "web checking last RESTful respone " do
+  describe "when checking last response " do
     it "it must not be nil" do
       @uw.term(1921, terms[0])
       @uw.last.wont_be_nil
     end
   end
 
-  describe "web asked for terms " do
+  describe "when getting terms " do
     it "must respond with a FirstDay" do
       data = @uw.term(2013, terms[2])
       data["FirstDay"].wont_be_nil
@@ -56,7 +56,7 @@ describe UwSws do
     end
   end
 
-  describe "when asked for curriculumn " do
+  describe "when asked for curriculum " do
     it "must return at least 5 of them" do
       @uw.curricula(1999, terms[0], department: "B A").size.must_be :>, 5
     end
@@ -70,7 +70,7 @@ describe UwSws do
   end
 
   # section searches
-  #   instructor or curriculumn are required
+  #   instructor or curriculum are required
   #   year is also required
   #   with no quarter you get all quarters
   #   quarter is required if searching by instructor
@@ -114,7 +114,7 @@ describe UwSws do
     end
   end
   # course searches
-  #   cirric is not needed if searching by course number
+  #   curric is not needed if searching by course number
   #   future terms must be 0-2, but, must be zero if exclude course w/o section
   #   make sure to page larger results using page_size and page_start
   #     while !@uw.next.nil?
@@ -122,7 +122,7 @@ describe UwSws do
   #   the following query string attributes dont seem to work
   #     course_title_starts, course_title_contains,
 
-  describe "when asked for courses in a curriculm " do
+  describe "when asked for courses in a curriculum " do
     it "must return at least 10 of them" do
       @uw.courses(1985, "winter", curriculum: "GEOG").size.must_be :>, 9
     end
@@ -140,14 +140,14 @@ describe UwSws do
     end
   end
 
-  describe "when asked for courses in a curriculm having sections " do
+  describe "when asked for courses in a curriculum having sections " do
     it "must return at least 5 of them" do
       @uw.courses(2005, "autumn", curriculum: "ENGL", has_sections: "on")
                   .size.must_be :>, 5
     end
   end
 
-  describe "when paging courses in a curriculm " do
+  describe "when paging courses in a curriculum " do
     it "must have a url that indicates next page" do
       # this particular curric has 107 courses
       # ideally, you would want to join results until .next is empty

@@ -45,7 +45,7 @@ describe UwSws do
 
   describe "when getting section status private endpoint " do
     it "it must not be nil" do
-      # this endpoint requires extra permissions that I dont have
+      # this endpoint requires extra permissions that I don't have
       # @uw.section_status(2009, "winter", "MUSAP", 218, "A")
       # @uw.last.wont_be_nil
     end
