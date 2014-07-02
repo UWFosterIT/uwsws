@@ -7,70 +7,67 @@ class UwSws
 
   def initialize(throw_404: true, logger: Logger.new(STDOUT),
                  use_cache: true, cert: "", key: "", throw_HEPPS: true)
-    @base             = "https://ws.admin.washington.edu/student/v4/public/"
-    @base_private     = "https://ws.admin.washington.edu/student/v4/"
+    @base             = "https://ws.admin.washington.edu/student/v5/"
     @last             = nil
     @next             = ""
     @use_cache        = use_cache
     @logger           = logger
     @throw_404        = throw_404
     @throw_HEPPS      = throw_HEPPS
-    @private_endpoint = false
     load_config(cert, key)
   end
 
   def campus
-    parse("#{endpoint}campus.json")
+    parse("campus.json")
   end
 
   def colleges(campus)
-    data = parse("#{endpoint}college.json?campus_short_name=#{campus}")
+    data = parse("college.json?campus_short_name=#{campus}")
 
     data["Colleges"]
   end
 
   def departments(college)
     fix_param(college)
-    data = parse("#{endpoint}department.json?college_abbreviation=#{college}")
+    data = parse("department.json?college_abbreviation=#{college}")
 
     data["Departments"]
   end
 
   def curricula(year, quarter, department: "", count: 0)
     fix_param(department)
-    data = parse("#{endpoint}curriculum.json?year=#{year}&quarter=#{quarter}"\
+    data = parse("curriculum.json?year=#{year}&quarter=#{quarter}"\
                  "&future_terms=#{count}&department_abbreviation=#{department}")
 
     data["Curricula"]
   end
 
-  def course(year, quarter, curriculum, number, is_private: false)
+  def course(year, quarter, curriculum, number)
     fix_param(curriculum)
-    data = parse("#{endpoint(is_private)}course/#{year},#{quarter},"\
-                 "#{curriculum},#{number}.json")
+    data = parse("course/#{year},#{quarter},#{curriculum},#{number}.json")
     data
   end
 
   def term(year, quarter)
-    parse("#{endpoint}term/#{year},#{quarter}.json")
+    parse("term/#{year},#{quarter}.json")
   end
 
   def term_current
-    parse("#{endpoint}term/current.json")
+    parse("term/current.json")
   end
 
   def term_next
-    parse("#{endpoint}term/next.json")
+    parse("term/next.json")
   end
 
   def term_previous
-    parse("#{endpoint}term/previous.json")
+    parse("term/previous.json")
   end
 
   def sections(year, curriculum: "", instructor: "", count: 0, quarter: "",
-               course_num: "", is_private: false)
+               course_num: "")
     fix_param(curriculum)
-    data = parse("#{endpoint(is_private)}section.json?year=#{year}"\
+    data = parse("section.json?year=#{year}"\
                  "&quarter=#{quarter}&curriculum_abbreviation=#{curriculum}"\
                  "&future_terms=#{count}&course_number=#{course_num}"\
                  "&reg_id=#{instructor}")
@@ -81,11 +78,10 @@ class UwSws
   def courses(year, quarter, curriculum: "", course: "", has_sections: "",
               size: 100, start: "", count: "", get_next: false)
     if get_next
-      url = @next.sub("student/v4/public/", "")
-      data = parse("#{endpoint}#{url}")
+      data = parse(@next.sub("/student/v5/", ""))
     else
       fix_param(curriculum)
-      data = parse("#{endpoint}course.json?&year=#{year}&quarter=#{quarter}"\
+      data = parse("course.json?&year=#{year}&quarter=#{quarter}"\
                    "&curriculum_abbreviation=#{curriculum}&"\
                    "course_number=#{course}&page_size=#{size}"\
                    "&page_start=#{start}"\
@@ -96,71 +92,43 @@ class UwSws
     data["Courses"]
   end
 
-  def section(year, quarter, curriculum, number, id, is_private: false)
+  def section(year, quarter, curriculum, number, id)
     fix_param(curriculum)
-    data = parse("#{endpoint(is_private)}course/#{year},#{quarter}," \
-                 "#{curriculum},#{number}/#{id}.json")
-
-    data
+    parse("course/#{year},#{quarter},#{curriculum},#{number}/#{id}.json")
   end
 
-  #
-  # these are for UW stff/faculty only, authentcation required
-  # other methods that have is_private: as a param option can call
-  # the private endpoint as well as the public endpoint
-  #
-
   def test_score(type, regid)
-    parse("#{endpoint(true)}testscore/#{type},#{regid}.json")
+    parse("testscore/#{type},#{regid}.json")
   end
 
   def enrollment_search(regid, verbose: "")
-    data = parse("#{endpoint(true)}enrollment.json?reg_id=#{regid}"\
-                 "&verbose=#{verbose}")
+    data = parse("enrollment.json?reg_id=#{regid}&verbose=#{verbose}")
 
     verbose.empty? ? data["EnrollmentLinks"] : data["Enrollments"]
   end
 
   def enrollment(year, quarter, regid, verbose: "")
-    parse("#{endpoint(true)}enrollment/#{year},#{quarter},#{regid}.json"\
-          "?verbose=#{verbose}")
+    parse("enrollment/#{year},#{quarter},#{regid}.json?verbose=#{verbose}")
   end
 
   def section_status(year, quarter, curric, course, id)
     fix_param(curric)
 
-    parse("#{endpoint(true)}course/#{year},#{quarter},#{curric}," \
-          "#{course}/#{id}/status.json")
-  end
-
-  def term_private(year, quarter)
-    parse("#{endpoint(true)}term/#{year},#{quarter}.json")
-  end
-
-  def term_current_private
-    parse("#{endpoint(true)}term/current.json")
-  end
-
-  def term_next_private
-    parse("#{endpoint(true)}term/next.json")
-  end
-
-  def term_previous_private
-    parse("#{endpoint(true)}term/previous.json")
+    parse("course/#{year},#{quarter},#{curric},#{course}/#{id}/status.json")
   end
 
   def person(regid)
-    parse("#{endpoint(true)}person/#{regid}.json")
+    parse("person/#{regid}.json")
   end
 
   def person_search(type, id)
-    parse("#{endpoint(true)}person.json?#{type}=#{id}")
+    parse("person.json?#{type}=#{id}")
   end
 
   def registration(year, quarter, curric, course, id, reg_id, dup_code = "")
     fix_param(curric)
 
-    parse("#{endpoint(true)}registration/#{year},#{quarter},#{curric}," \
+    parse("registration/#{year},#{quarter},#{curric}," \
           "#{course},#{id},#{reg_id},#{dup_code}.json")
   end
 
@@ -168,7 +136,7 @@ class UwSws
                           section: "", reg_id: "", active: "",
                           reg_id_instructor: "")
     fix_param(curriculum)
-    data = parse("#{endpoint(true)}registration.json?year=#{year}&"\
+    data = parse("registration.json?year=#{year}&"\
                  "quarter=#{quarter}&curriculum_abbreviation=#{curriculum}&"\
                  "course_number=#{course}&section_id=#{section}&"\
                  "reg_id=#{reg_id}&is_active=#{active}&"\
@@ -194,14 +162,8 @@ class UwSws
     end
   end
 
-  def endpoint(is_private = false)
-    @private_endpoint = is_private
-
-    is_private ? @base_private : @base
-  end
-
   def parse(url)
-    data = request(url)
+    data = request("#{@base}#{url}")
     return nil unless !data.nil?
     data = clean(data)
 
@@ -241,16 +203,12 @@ class UwSws
     data
   end
 
-  def restful_client(url, is_private: false)
-    if @private_endpoint
-      RestClient::Resource.new(
-        url,
-        ssl_client_cert: OpenSSL::X509::Certificate.new(@cert_file),
-        ssl_client_key: OpenSSL::PKey::RSA.new(@key_file),
-        log: @logger)
-    else
-      RestClient::Resource.new(url, log: @logger)
-    end
+  def restful_client(url)
+    RestClient::Resource.new(
+      url,
+      ssl_client_cert: OpenSSL::X509::Certificate.new(@cert_file),
+      ssl_client_key: OpenSSL::PKey::RSA.new(@key_file),
+      log: @logger)
   end
 
   def get_cache(file)
