@@ -134,13 +134,16 @@ describe UwSws do
   end
 
   describe "when searching for person registrations " do
-    it "it must have more than 10" do
-      # since registrations are not available for prev terms
-      # make this a current year and valid regid
-      #
-      #@uw.registration_search(2013, "autumn",
-      #                        reg_id: "6ADA93ABA771476481FE44FC086C74DA")
-      #   .size.must_be :>, 10
+    it "it must have more than 1" do
+      # registrations are only available for current terms
+      term = @uw.term_current
+      data = @uw.registration_search(term["Year"], term["Quarter"],
+                                     curriculum: "CSE", course: 142,
+                                     section: "A", active: "on")
+
+      result = @uw.registration_search(term["Year"], term["Quarter"],
+                                       reg_id: data[0]["RegID"])
+      result.size.must_be :>, 0
     end
   end
 
@@ -298,6 +301,37 @@ describe UwSws do
   describe "when asked to test a section with a zero start room number " do
     it "must return without error" do
       @uw.section(2010, "spring", "ARTS", 150, "A").wont_be_nil
+    end
+  end
+
+  describe "when getting notices " do
+    it "it must not be nil" do
+      # @uw.notice "9136CCB8F66711D5BE060004AC494FFE"
+      #
+      # currently I'm getting the following error code....
+      # "DFDSConnection: CreateRequest: Invalid transaction code: SWI102"
+    end
+  end
+
+  describe "when getting change of major " do
+    it "it must not be nil" do
+      # @uw.change_of_major(2013, :autumn, "9136CCB8F66711D5BE060004AC494FFE")
+      #
+      # returns empty result, most likely becuase this requires x-uw-act-as
+      # set in the headers and I know I dont have permissions for that
+    end
+  end
+
+  describe "when getting financial info " do
+    it "it must not be nil" do
+      term = @uw.term_current
+      data = @uw.registration_search(term["Year"], term["Quarter"],
+                                     curriculum: "CSE", course: 142,
+                                     section: "A", active: "on")
+      #puts @uw.financial data[0]["RegID"]
+      #
+      # currently I'm getting the following error code....
+      # "DFDSConnection: CreateRequest: Invalid transaction code: SWI102"
     end
   end
 end

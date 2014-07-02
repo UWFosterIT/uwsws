@@ -18,24 +18,24 @@ class UwSws
   end
 
   def campus
-    parse("campus.json")
+    parse "campus.json"
   end
 
   def colleges(campus)
-    data = parse("college.json?campus_short_name=#{campus}")
+    data = parse "college.json?campus_short_name=#{campus}"
 
     data["Colleges"]
   end
 
   def departments(college)
-    fix_param(college)
-    data = parse("department.json?college_abbreviation=#{college}")
+    fix_param college
+    data = parse "department.json?college_abbreviation=#{college}"
 
     data["Departments"]
   end
 
   def curricula(year, quarter, department: "", count: 0)
-    fix_param(department)
+    fix_param department
     data = parse("curriculum.json?year=#{year}&quarter=#{quarter}"\
                  "&future_terms=#{count}&department_abbreviation=#{department}")
 
@@ -43,30 +43,30 @@ class UwSws
   end
 
   def course(year, quarter, curriculum, number)
-    fix_param(curriculum)
-    data = parse("course/#{year},#{quarter},#{curriculum},#{number}.json")
+    fix_param curriculum
+    data = parse "course/#{year},#{quarter},#{curriculum},#{number}.json"
     data
   end
 
   def term(year, quarter)
-    parse("term/#{year},#{quarter}.json")
+    parse "term/#{year},#{quarter}.json"
   end
 
   def term_current
-    parse("term/current.json")
+    parse "term/current.json"
   end
 
   def term_next
-    parse("term/next.json")
+    parse "term/next.json"
   end
 
   def term_previous
-    parse("term/previous.json")
+    parse "term/previous.json"
   end
 
   def sections(year, curriculum: "", instructor: "", count: 0, quarter: "",
                course_num: "")
-    fix_param(curriculum)
+    fix_param curriculum
     data = parse("section.json?year=#{year}"\
                  "&quarter=#{quarter}&curriculum_abbreviation=#{curriculum}"\
                  "&future_terms=#{count}&course_number=#{course_num}"\
@@ -78,9 +78,9 @@ class UwSws
   def courses(year, quarter, curriculum: "", course: "", has_sections: "",
               size: 100, start: "", count: "", get_next: false)
     if get_next
-      data = parse(@next.sub("/student/v5/", ""))
+      data = parse @next.sub("/student/v5/", "")
     else
-      fix_param(curriculum)
+      fix_param curriculum
       data = parse("course.json?&year=#{year}&quarter=#{quarter}"\
                    "&curriculum_abbreviation=#{curriculum}&"\
                    "course_number=#{course}&page_size=#{size}"\
@@ -93,40 +93,40 @@ class UwSws
   end
 
   def section(year, quarter, curriculum, number, id)
-    fix_param(curriculum)
-    parse("course/#{year},#{quarter},#{curriculum},#{number}/#{id}.json")
+    fix_param curriculum
+    parse "course/#{year},#{quarter},#{curriculum},#{number}/#{id}.json"
   end
 
   def test_score(type, regid)
-    parse("testscore/#{type},#{regid}.json")
+    parse "testscore/#{type},#{regid}.json"
   end
 
   def enrollment_search(regid, verbose: "")
-    data = parse("enrollment.json?reg_id=#{regid}&verbose=#{verbose}")
+    data = parse "enrollment.json?reg_id=#{regid}&verbose=#{verbose}"
 
     verbose.empty? ? data["EnrollmentLinks"] : data["Enrollments"]
   end
 
   def enrollment(year, quarter, regid, verbose: "")
-    parse("enrollment/#{year},#{quarter},#{regid}.json?verbose=#{verbose}")
+    parse "enrollment/#{year},#{quarter},#{regid}.json?verbose=#{verbose}"
   end
 
   def section_status(year, quarter, curric, course, id)
-    fix_param(curric)
+    fix_param curric
 
-    parse("course/#{year},#{quarter},#{curric},#{course}/#{id}/status.json")
+    parse "course/#{year},#{quarter},#{curric},#{course}/#{id}/status.json"
   end
 
   def person(regid)
-    parse("person/#{regid}.json")
+    parse "person/#{regid}.json"
   end
 
   def person_search(type, id)
-    parse("person.json?#{type}=#{id}")
+    parse "person.json?#{type}=#{id}"
   end
 
   def registration(year, quarter, curric, course, id, reg_id, dup_code = "")
-    fix_param(curric)
+    fix_param curric
 
     parse("registration/#{year},#{quarter},#{curric}," \
           "#{course},#{id},#{reg_id},#{dup_code}.json")
@@ -135,7 +135,7 @@ class UwSws
   def registration_search(year, quarter, curriculum: "", course: "",
                           section: "", reg_id: "", active: "",
                           reg_id_instructor: "")
-    fix_param(curriculum)
+    fix_param curriculum
     data = parse("registration.json?year=#{year}&"\
                  "quarter=#{quarter}&curriculum_abbreviation=#{curriculum}&"\
                  "course_number=#{course}&section_id=#{section}&"\
@@ -143,6 +143,18 @@ class UwSws
                  "instructor_reg_id=#{reg_id_instructor}")
 
     data["Registrations"]
+  end
+
+  def notice(regid)
+    parse "notice/#{regid}.json"
+  end
+
+  def change_of_major(year, quarter, regid)
+    parse "enrollment/#{year},#{quarter},#{regid}/major.json"
+  end
+
+  def financial(regid)
+    parse "person/#{regid}/financial.json"
   end
 
   private
@@ -163,11 +175,11 @@ class UwSws
   end
 
   def parse(url)
-    data = request("#{@base}#{url}")
+    data = request "#{@base}#{url}"
     return nil unless !data.nil?
-    data = clean(data)
+    data = clean data
 
-    @last = JSON.parse(data)
+    @last = JSON.parse data
     @logger.debug "fetched - #{@last}"
     @next = @last["Next"].nil? ? "" : @last["Next"]["Href"]
 
@@ -229,10 +241,10 @@ class UwSws
 
   def load_config(cert, key)
     if ! (cert.empty? && key.empty?)
-      does_exist?(cert)
-      @cert_file = File.read(cert)
-      does_exist?(key)
-      @key_file  = File.read(key)
+      does_exist? cert
+      @cert_file = File.read cert
+      does_exist? key
+      @key_file  = File.read key
       @logger.debug "loaded cert and key files"
     end
 
@@ -240,7 +252,7 @@ class UwSws
   end
 
   def does_exist?(file)
-    raise "Could not find #{file}" unless File.exist?(file)
+    raise "Could not find #{file}" unless File.exist? file
   end
 
   def clean_bools(data)
@@ -255,7 +267,7 @@ class UwSws
   end
 
   def clean(data)
-    data = clean_spaces(data)
-    data = clean_bools(data)
+    data = clean_spaces data
+    data = clean_bools data
   end
 end
