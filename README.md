@@ -88,10 +88,16 @@ Change the ``cache`` symlink to point to a valid path or create a directory for 
     mkdir cache
     rake
 
-## Contributing
+### Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+### Changes Since < 2.0.0
+* v4 is no longer used, all queries are now against v5
+* no more public endpoints, all queries now require a cert
+* Endpoints that ended with _search have been changed to their plural form (person_search to people)
+* A few new endpoints were added, see list above for whats supported
