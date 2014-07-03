@@ -8,11 +8,14 @@ describe UwSws do
     log       = Logger.new("log.txt")
     log.level = Logger::FATAL
 
+    # cert and key are required
+    # do not explicity set URL if you want to make sure to use v5 production
     cert   = "/home/marc/.keys/milesm.bschool.pem"
     key    = "/home/marc/.keys/ItsAllGood.key"
+    url    = "https://ucswseval1.cac.washington.edu/student/v5/"
     @regid = "DB79E7927ECA11D694790004AC494FFE"
     @uw    = UwSws.new(cert: cert, key: key, throw_HEPPS: false,
-                       logger: log, use_cache: true)
+                       logger: log, use_cache: true, base: url)
   end
 
   describe "when getting test scores " do
@@ -66,26 +69,26 @@ describe UwSws do
 
   describe "when doing a search for a person " do
     it "each must not be nil" do
-      @uw.person_search("reg_id", @regid)
+      @uw.people("reg_id", @regid)
       @uw.last.wont_be_nil
-      @uw.person_search("net_id", "milesm")
+      @uw.people("net_id", "milesm")
       @uw.last.wont_be_nil
-      @uw.person_search("student_number", "0242267")
+      @uw.people("student_number", "0242267")
       @uw.last.wont_be_nil
-      @uw.person_search("employee_id", "864004999")
+      @uw.people("employee_id", "864004999")
       @uw.last.wont_be_nil
     end
   end
 
   describe "when doing an enrollment search " do
     it "it must equal 2" do
-      @uw.enrollment_search(@regid).size.must_equal(2)
+      @uw.enrollments(@regid).size.must_equal(2)
     end
   end
 
   describe "when doing a verbose enrollment search " do
     it "it must have 2" do
-      @uw.enrollment_search(@regid, verbose: "on").size.must_equal(2)
+      @uw.enrollments(@regid, verbose: "on").size.must_equal(2)
     end
   end
 
@@ -116,7 +119,7 @@ describe UwSws do
   describe "when searching for active course registrations " do
     it "it must be greater than 100" do
       term = @uw.term_current
-      data = @uw.registration_search(term["Year"], term["Quarter"],
+      data = @uw.registrations(term["Year"], term["Quarter"],
                                      curriculum: "CSE", course: 142,
                                      section: "A", active: "on")
       data.size.must_be :>, 100
@@ -126,7 +129,7 @@ describe UwSws do
   describe "when searching for course registrations " do
     it "it must be greater than 200" do
       term = @uw.term_current
-      data = @uw.registration_search(term["Year"], term["Quarter"],
+      data = @uw.registrations(term["Year"], term["Quarter"],
                                      curriculum: "CSE", course: 142,
                                      section: "A")
       data.size.must_be :>, 200
@@ -137,11 +140,11 @@ describe UwSws do
     it "it must have more than 1" do
       # registrations are only available for current terms
       term = @uw.term_current
-      data = @uw.registration_search(term["Year"], term["Quarter"],
+      data = @uw.registrations(term["Year"], term["Quarter"],
                                      curriculum: "CSE", course: 142,
                                      section: "A", active: "on")
 
-      result = @uw.registration_search(term["Year"], term["Quarter"],
+      result = @uw.registrations(term["Year"], term["Quarter"],
                                        reg_id: data[0]["RegID"])
       result.size.must_be :>, 0
     end
@@ -306,32 +309,24 @@ describe UwSws do
 
   describe "when getting notices " do
     it "it must not be nil" do
-      # @uw.notice "9136CCB8F66711D5BE060004AC494FFE"
-      #
-      # currently I'm getting the following error code....
-      # "DFDSConnection: CreateRequest: Invalid transaction code: SWI102"
-    end
-  end
+      term = @uw.term_current
+      data = @uw.registrations(term["Year"], term["Quarter"],
+                                     curriculum: "CSE", course: 142,
+                                     section: "A", active: "on")
 
-  describe "when getting change of major " do
-    it "it must not be nil" do
-      # @uw.change_of_major(2013, :autumn, "9136CCB8F66711D5BE060004AC494FFE")
-      #
-      # returns empty result, most likely becuase this requires x-uw-act-as
-      # set in the headers and I know I dont have permissions for that
+      # the following generates 500 errors...
+      #puts @uw.notice data[0]["RegID"]
     end
   end
 
   describe "when getting financial info " do
     it "it must not be nil" do
       term = @uw.term_current
-      data = @uw.registration_search(term["Year"], term["Quarter"],
+      data = @uw.registrations(term["Year"], term["Quarter"],
                                      curriculum: "CSE", course: 142,
                                      section: "A", active: "on")
-      #puts @uw.financial data[0]["RegID"]
-      #
-      # currently I'm getting the following error code....
-      # "DFDSConnection: CreateRequest: Invalid transaction code: SWI102"
+      result = @uw.finance data[0]["RegID"]
+      result["Person"].wont_be_nil
     end
   end
 end

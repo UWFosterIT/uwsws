@@ -6,8 +6,9 @@ class UwSws
   attr_reader :last, :next
 
   def initialize(throw_404: true, logger: Logger.new(STDOUT),
-                 use_cache: true, cert: "", key: "", throw_HEPPS: true)
-    @base             = "https://ws.admin.washington.edu/student/v5/"
+                 use_cache: true, cert: "", key: "", throw_HEPPS: true,
+                 base: "https://ws.admin.washington.edu/student/v5/")
+    @base             = base
     @last             = nil
     @next             = ""
     @use_cache        = use_cache
@@ -101,14 +102,14 @@ class UwSws
     parse "testscore/#{type},#{regid}.json"
   end
 
-  def enrollment_search(regid, verbose: "")
+  def enrollment(year, quarter, regid, verbose: "")
+    parse "enrollment/#{year},#{quarter},#{regid}.json?verbose=#{verbose}"
+  end
+
+  def enrollments(regid, verbose: "")
     data = parse "enrollment.json?reg_id=#{regid}&verbose=#{verbose}"
 
     verbose.empty? ? data["EnrollmentLinks"] : data["Enrollments"]
-  end
-
-  def enrollment(year, quarter, regid, verbose: "")
-    parse "enrollment/#{year},#{quarter},#{regid}.json?verbose=#{verbose}"
   end
 
   def section_status(year, quarter, curric, course, id)
@@ -121,7 +122,7 @@ class UwSws
     parse "person/#{regid}.json"
   end
 
-  def person_search(type, id)
+  def people(type, id)
     parse "person.json?#{type}=#{id}"
   end
 
@@ -132,7 +133,7 @@ class UwSws
           "#{course},#{id},#{reg_id},#{dup_code}.json")
   end
 
-  def registration_search(year, quarter, curriculum: "", course: "",
+  def registrations(year, quarter, curriculum: "", course: "",
                           section: "", reg_id: "", active: "",
                           reg_id_instructor: "")
     fix_param curriculum
@@ -153,7 +154,7 @@ class UwSws
     parse "enrollment/#{year},#{quarter},#{regid}/major.json"
   end
 
-  def financial(regid)
+  def finance(regid)
     parse "person/#{regid}/financial.json"
   end
 
