@@ -206,7 +206,7 @@ class UwSws
           # HEPPS errors for past courses are not fixable
           @logger.warn("#{url} - #{response.to_s}")
         elsif response.code == 404 && !@throw_404
-          @logger.warn("#{url} - 404 - #{response.to_s}")
+          @logger.warn("#{url} - 404")
         else
           raise "Errors for #{url}\n#{response.to_s}"
         end
