@@ -76,17 +76,20 @@ Most of these are not implemented due to additional security requirements beyond
 ## Development
 
 ### Installation
+Ignore the cache warnings after bundle install.
 
     git clone git@github.com:UWFosterIT/uwsws.git
     cd uwsws
     bundle install
 
-### Setup and Tests
-Change the ``cache`` symlink to point to a valid path or create a directory for it like below.  As you can see in ``/test`` you will need to also provide the full path to your 509 cert and key before running ``rake``.
+#### Setup and Tests
+Change the ``cache`` symlink to point to a valid path or create a directory for it like below.  Also, in ``/test`` you will need to provide the full path to your x.509 cert and key before running ``rake``.
 
     rm cache
     mkdir cache
     rake
+
+You may get 1 or 2 test failing, "financial info", if that endpoint isn't in production yet. If something else fails it's most likely your cert or its permissions granted to it.
 
 ### Contributing
 
