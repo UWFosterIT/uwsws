@@ -11,12 +11,12 @@ endpoints](https://wiki.cac.washington.edu/display/SWS/Student+Web+Service+Clien
 ### Examples
 Basic example below gives you hash of term data for winter 2013
 
-  require 'uw_sws'
-  cert    = "/TheFullPath/ToYour/x509Certificate.pem"
-  key     = "/TheFullPath/ToYour/x509Key"
-  url     = "https://ucswseval1.cac.washington.edu/student/v5/"
-  service = UwSws.new(cert: cert, key: key, base: url, use_cache: false)
-  term    = service.term(2013, "winter")
+    require 'uw_sws'
+    cert    = "/TheFullPath/ToYour/x509Certificate.pem"
+    key     = "/TheFullPath/ToYour/x509Key"
+    url     = "https://ucswseval1.cac.washington.edu/student/v5/"
+    service = UwSws.new(cert: cert, key: key, base: url, use_cache: false)
+    term    = service.term(2013, "winter")
 
 
 Maybe you want all the Geology courses from 1985?
