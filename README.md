@@ -9,27 +9,23 @@ endpoints](https://wiki.cac.washington.edu/display/SWS/Student+Web+Service+Clien
     gem install uw_sws
 
 ### Examples
-Basic example below gives you hash of term data for winter 2013
+First, configure the gem to how you want to use it.
 
-    require 'uw_sws'
-    cert    = "/TheFullPath/ToYour/x509Certificate.pem"
-    key     = "/TheFullPath/ToYour/x509Key"
-    url     = "https://ucswseval1.cac.washington.edu/student/v5/"
-    service = UwSws.new(cert: cert, key: key, base: url, use_cache: false)
-    term    = service.term(2013, "winter")
+```Ruby
+require 'uw_sws'
+cert    = "/TheFullPath/ToYour/x509Certificate.pem"
+key     = "/TheFullPath/ToYour/x509Key"
+url     = "https://ucswseval1.cac.washington.edu/student/v5/"
+service = UwSws.new(cert: cert, key: key, base: url, use_cache: false)
+```
 
+Now get all the Geology courses from 1985?
 
-Maybe you want all the Geology courses from 1985?
-
-    require 'uw_student_webservice'
-    service = UwSws.new
     courses = service(1985, "winter", curriculum: "GEOG")
 
 For cases where you need to page through results you can check for the existance
 of ``service.next`` and make follow up queries based on it's data.
 
-    require 'uw_student_webservice'
-    service = UwSws.new
     courses = service.courses(1985, "autumn", curriculum: "GEOG", size: 25)
     puts service.next
 
