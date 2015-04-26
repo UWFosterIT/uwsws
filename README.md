@@ -49,7 +49,6 @@ All links below go to the official service documentation.  The code block refers
 * [Department Search](https://wiki.cac.washington.edu/display/SWS/Department+Search+Resource+V5) ``service.departments``
 * [Enrollment](https://wiki.cac.washington.edu/display/SWS/Enrollment+Resource+V5) ``service.enrollment``
 * [Enrollment Search](https://wiki.cac.washington.edu/display/SWS/Enrollment+Search+Resource+V5) ``service.enrollments``
-* [Personal Financial](https://wiki.cac.washington.edu/display/SWS/Personal+Financial+Resource+V5) ``service.finance``
 * [Person](https://wiki.cac.washington.edu/display/SWS/Person+Resource+V5) ``service.person``
 * [Person Search](https://wiki.cac.washington.edu/display/SWS/Person+Search+Resource+V5) ``service.people``
 * [Registration](https://wiki.cac.washington.edu/display/SWS/Registration+Resource+V5) ``service.registration``
@@ -61,6 +60,7 @@ All links below go to the official service documentation.  The code block refers
 
 #### Partially Supported (may or may not work)
 * [Notice](https://wiki.cac.washington.edu/display/SWS/Notice+Resource+V5) ``service.notice``
+* [Personal Financial](https://wiki.cac.washington.edu/display/SWS/Personal+Financial+Resource+V5) ``service.finance``
 
 #### Not implemented in this gem
 Most of these are not implemented due to additional security requirements beyond a simple 509 cert.  Requirements such as permissions in ASTRA or x-uw-act-as permissions passed in the header.  Feel free fork and make a pull request with working tests if you have those permissions.

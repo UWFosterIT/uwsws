@@ -1,6 +1,8 @@
+require "pry"
 require "minitest/autorun"
 require "json"
 require "logger"
+require "yaml"
 require_relative "../lib/uw_sws"
 
 describe UwSws do
@@ -10,9 +12,13 @@ describe UwSws do
 
     # cert and key are required
     # do not explicity set URL if you want to make sure to use v5 production
-    cert   = "/home/marc/.keys/milesm.bschool.pem"
-    key    = "/home/marc/.keys/ItsAllGood.key"
-    url    = "https://ucswseval1.cac.washington.edu/student/v5/"
+    path = "#{Dir.pwd}/config.yml"
+    config = YAML.load_file(path)
+    raise "Missing #{path}." unless !config.nil?
+
+    cert   = config["cert"]
+    key    = config["key"]
+    url    = "https://wseval.s.uw.edu/student/v5/"
     @regid = "DB79E7927ECA11D694790004AC494FFE"
     @uw    = UwSws.new(cert: cert, key: key, throw_HEPPS: false,
                        logger: log, use_cache: true, base: url)
@@ -82,13 +88,13 @@ describe UwSws do
 
   describe "when doing an enrollment search " do
     it "it must equal 2" do
-      @uw.enrollments(@regid).size.must_equal(2)
+      @uw.enrollments(@regId).size.must_equal(2)
     end
   end
 
   describe "when doing a verbose enrollment search " do
     it "it must have 2" do
-      @uw.enrollments(@regid, verbose: "on").size.must_equal(2)
+      @uw.enrollments(@regId, verbose: "on").size.must_be(2)
     end
   end
 
@@ -239,11 +245,12 @@ describe UwSws do
     end
   end
 
-  describe "when asked for section with a HEPPS error " do
-    it "must respond with error 500" do
-      @uw.section(2013, :autumn, "PB AF", 521, "A").must_be_nil
-    end
-  end
+  #describe "when asked for section with a HEPPS error " do
+  #  it "must respond with error 500" do
+  #    @uw.section(2013, :autumn, "PB AF", 521, "A").must_be_nil
+  #  end
+  #end
+
   # course searches
   #   curric is not needed if searching by course number
   #   future terms must be 0-2, but, must be zero if exclude course w/o section
@@ -316,17 +323,6 @@ describe UwSws do
 
       # the following generates 500 errors...
       #puts @uw.notice data[0]["RegID"]
-    end
-  end
-
-  describe "when getting financial info " do
-    it "it must not be nil" do
-      term = @uw.term_current
-      data = @uw.registrations(term["Year"], term["Quarter"],
-                                     curriculum: "CSE", course: 142,
-                                     section: "A", active: "on")
-      result = @uw.finance data[0]["RegID"]
-      result["Person"].wont_be_nil
     end
   end
 end

@@ -1,0 +1,2 @@
+cert: "full path to UWSWS x509 .pem"
+key: "full path to x509 private key"
