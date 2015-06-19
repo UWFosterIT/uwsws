@@ -66,12 +66,12 @@ class UwSws
   end
 
   def sections(year, curriculum: "", instructor: "", count: 0, quarter: "",
-               course_num: "")
+               course_num: "", delete_flag: "")
     fix_param curriculum
     data = parse("section.json?year=#{year}"\
                  "&quarter=#{quarter}&curriculum_abbreviation=#{curriculum}"\
                  "&future_terms=#{count}&course_number=#{course_num}"\
-                 "&reg_id=#{instructor}")
+                 "&reg_id=#{instructor}&delete_flag=#{delete_flag}")
 
     data["Sections"]
   end
@@ -262,7 +262,7 @@ class UwSws
   end
 
   def clean_spaces(data)
-    data.gsub! /(\\?"|)((?:.(?!\1))+.)(?:\1)/ do |match|
+    data.gsub!(/(\\?"|)((?:.(?!\1))+.)(?:\1)/) do |match|
       match.gsub(/^(\\?")\s+|\s+(\\?")$/, "\\1\\2").strip
     end
   end

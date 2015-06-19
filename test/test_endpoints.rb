@@ -18,10 +18,10 @@ describe UwSws do
 
     cert   = config["cert"]
     key    = config["key"]
-    url    = "https://wseval.s.uw.edu/student/v5/"
+    # url    = "https://wseval.s.uw.edu/student/v5/"
     @regid = "9136CCB8F66711D5BE060004AC494FFE"
     @uw    = UwSws.new(cert: cert, key: key, throw_HEPPS: false,
-                       logger: log, use_cache: false, base: url)
+                       logger: log, use_cache: false)
   end
 
   describe "when getting test scores " do
@@ -242,6 +242,14 @@ describe UwSws do
     it "must return at least 1 of them" do
       @uw.sections(2009, instructor: "78BE067C6A7D11D5A4AE0004AC494FFE",
                    quarter: :summer).size.must_be :>, 0
+    end
+  end
+
+  describe "when asked for sections that were withdrawn " do
+    it "must return at least 1 of them" do
+      @uw.sections(2015, curriculum: "MKTG", quarter: :autumn,
+                   course_num: 510, delete_flag: "withdrawn,active")
+                  .size.must_be :>, 0
     end
   end
 
