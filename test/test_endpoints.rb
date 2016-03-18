@@ -1,4 +1,4 @@
-require "pry"
+require "pry-byebug"
 require "minitest/autorun"
 require "json"
 require "logger"
@@ -21,13 +21,20 @@ describe UwSws do
     # url    = "https://wseval.s.uw.edu/student/v5/"
     @regid = "9136CCB8F66711D5BE060004AC494FFE"
     @uw    = UwSws.new(cert: cert, key: key, throw_HEPPS: false,
-                       logger: log, use_cache: false)
+                       logger: log, use_cache: true)
   end
 
-  describe "when getting test scores " do
+  describe "when getting test scores for a specific type " do
     it "it must not be nil" do
       @uw.test_score("SAT", "9136CCB8F66711D5BE060004AC494FFE")
       @uw.last.wont_be_nil
+    end
+  end
+
+  describe "when getting all test scores " do
+    it "it must not be nil" do
+      tests = @uw.tests("9136CCB8F66711D5BE060004AC494FFE")
+      tests["TestsTaken"].size.must_be :>, 9
     end
   end
 

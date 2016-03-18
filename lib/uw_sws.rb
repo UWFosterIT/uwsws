@@ -102,6 +102,10 @@ class UwSws
     parse "testscore/#{type},#{regid}.json"
   end
 
+  def tests(regid)
+    parse "testscore/#{regid}.json"
+  end
+
   def enrollment(year, quarter, regid, verbose: "")
     parse "enrollment/#{year},#{quarter},#{regid}.json?verbose=#{verbose}"
   end
