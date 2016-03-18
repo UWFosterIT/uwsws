@@ -1,7 +1,8 @@
 require "restclient"
 require "logger"
 require "json"
-
+require "digest/md5"
+        
 class UwSws
   attr_reader :last, :next
 
@@ -192,7 +193,7 @@ class UwSws
   end
 
   def request(url)
-    cache_path = Dir.pwd + "/cache/#{url.gsub('/', '')}"
+    cache_path = Dir.pwd + "/cache/" + Digest::MD5.hexdigest(url)
 
     data = get_cache(cache_path)
     if data.nil?
