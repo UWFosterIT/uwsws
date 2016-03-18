@@ -20,8 +20,12 @@ describe UwSws do
     key    = config["key"]
     # url    = "https://wseval.s.uw.edu/student/v5/"
     @regid = "9136CCB8F66711D5BE060004AC494FFE"
-    @uw    = UwSws.new(cert: cert, key: key, throw_HEPPS: false,
-                       logger: log, use_cache: true)
+    @uw    = UwSws.new(cert: cert, 
+                       key: key, 
+                       throw_HEPPS: false,
+                       throw_404: false,
+                       logger: log, 
+                       use_cache: true)
   end
 
   describe "when getting test scores for a specific type " do
@@ -35,6 +39,14 @@ describe UwSws do
     it "it must not be nil" do
       tests = @uw.tests("9136CCB8F66711D5BE060004AC494FFE")
       tests["TestsTaken"].size.must_be :>, 9
+    end
+  end
+
+  describe "when getting all test scores for invalid regid " do
+    it "it must not error" do
+      # this is not a valid regid, so result should be nil and not 404
+      tests = @uw.tests("9136CCB8F66711D5BE060004AC494FFF")
+      tests.must_be_nil
     end
   end
 

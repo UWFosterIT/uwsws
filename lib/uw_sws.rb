@@ -182,7 +182,7 @@ class UwSws
 
   def parse(url)
     data = request "#{@base}#{url}"
-    return nil unless !data.nil?
+    return nil unless !data.to_s.empty?
     data = clean data
 
     @last = JSON.parse data
@@ -212,6 +212,8 @@ class UwSws
           @logger.warn("#{url} - #{response.to_s}")
         elsif response.code == 404 && !@throw_404
           @logger.warn("#{url} - 404")
+          # hacky way to cache a 404 vs. saving the html the server sends back
+          set_cache("", cache_path)
         else
           raise "Errors for #{url}\n#{response.to_s}"
         end
